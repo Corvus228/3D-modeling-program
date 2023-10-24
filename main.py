@@ -1,5 +1,4 @@
 import sys, random
-import numpy as np
 
 from PyQt6.QtCore import Qt, QRect, QPointF,QSize
 from PyQt6.QtGui import QAction, QColor,  QPainter, QPainterPath, QPen, QFont
@@ -26,7 +25,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(widget)
 
         button_action = QAction("&Draw OBJ", self)
-        button_action.triggered.connect(lambda: widget.setFilename("C:/Users/Пользователь/Desktop/негр.obj"))
+        button_action.triggered.connect(lambda: widget.setFilename("башка.obj"))
 
         menu = self.menuBar()
         file_menu = menu.addMenu("&File")
