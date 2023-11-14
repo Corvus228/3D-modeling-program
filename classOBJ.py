@@ -1,7 +1,10 @@
 import filereader
-from PyQt6 import QtCore
+from PyQt5 import QtCore
+
 
 class OBJ():
+    ID = 0
+
     def __init__(self, filename):
         super().__init__()
         self.points = []
@@ -10,6 +13,8 @@ class OBJ():
         self.textures = []
         self.polygons = []
         self.getOBJ(filename)
+        self.name = (f"{filename.split('.')[0].split('/')[1]}{OBJ.ID}")
+        OBJ.ID += 1
 
     def getOBJ(self, filename):
         lines = filereader.readfile(filename)

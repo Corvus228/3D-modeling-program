@@ -1,6 +1,7 @@
 import math
 import numpy as np
 
+
 def rotateZ(angle, obj):
     angle = np.sign(angle) * 0.01
     Z = [
@@ -11,6 +12,7 @@ def rotateZ(angle, obj):
     for index, p in enumerate(obj.points):
         rotated = np.dot(Z, p)
         obj.points[index] = (rotated[0], rotated[1], rotated[2])
+
 
 def rotateX(angle, obj):
     angle = np.sign(angle) * 0.01
@@ -23,6 +25,7 @@ def rotateX(angle, obj):
         rotated = np.dot(X, p)
         obj.points[index] = (rotated[0], rotated[1], rotated[2])
 
+
 def rotateY(angle, obj):
     angle = np.sign(angle) * 0.01
     Y = [
@@ -33,3 +36,21 @@ def rotateY(angle, obj):
     for index, p in enumerate(obj.points):
         rotated = np.dot(Y, p)
         obj.points[index] = (rotated[0], rotated[1], rotated[2])
+
+
+def scale(coefficient, obj):
+    scale = [
+        [coefficient, 0, 0],
+        [0, coefficient, 0],
+        [0, 0, coefficient]
+    ]
+    for index, p in enumerate(obj.points):
+        scaled = np.dot(scale, p)
+        obj.points[index] = (scaled[0], scaled[1], scaled[2])
+
+
+def move(coefficient_x, coefficient_y, obj):
+    coefficient_x = np.sign(coefficient_x) * 0.005
+    coefficient_y = np.sign(coefficient_y) * 0.005
+    for index, p in enumerate(obj.points):
+        obj.points[index] = (p[0] - coefficient_x, p[1] - coefficient_y, p[2])
