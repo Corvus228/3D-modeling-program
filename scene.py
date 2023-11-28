@@ -6,6 +6,7 @@ class Scene():
         self.listOfNames = []
         self.selectedOBJs = []
         self.getobjnames()
+
     def getobjnames(self):
         self.listOfNames = []
         for obj in self.listOfOBJ:
@@ -21,12 +22,26 @@ class Scene():
                 self.listOfOBJ.remove(obj)
         self.getobjnames()
 
-    def getOBJ(self):
-        obj = self.listOfOBJ[-1]
-        return obj
+    def setCurrentOBJ(self, objname):
+        self.selectedOBJs = []
+        for obj in self.listOfOBJ:
+            if obj.name == objname:
+                self.selectedOBJs.append(obj)
+                obj.setSelectedColor()
+        self.getobjnames()
 
-    def setCurrentOBJ(self, obj):
-        self.selectedOBJs.append(obj)
+    def unselectOBJ(self, objname):
+        for obj in self.selectedOBJs:
+            if obj.name == objname:
+                self.selectedOBJs.remove(obj)
+                obj.setUnselectedColor()
+        self.getobjnames()
+
+    def addCurrentOBJ(self, objname):
+        for obj in self.listOfOBJ:
+            if obj.name == objname:
+                self.selectedOBJs.append(obj)
+        self.getobjnames()
 
     def objRotateX(self, obj, angle):
         for obj in self.selectedOBJs:

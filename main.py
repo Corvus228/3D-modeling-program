@@ -102,17 +102,16 @@ class Widget(QWidget):
         if self.scene.listOfOBJ:
             for obj in self.scene.listOfOBJ:
                 obj.rescalePolygon(w, h)
-                self.paintOBJ(qp, obj)
+                self.paintOBJ(qp, obj, obj.paintColor)
         qp.end()
 
     def createOBJ(self, filename):
         self.scene.addOBJ(OBJ(filename))
         self.list.updateList()
-        self.scene.setCurrentOBJ(self.scene.getOBJ())
         self.update()
 
-    def paintOBJ(self, qp, obj):
-        qp.setPen(Qt.GlobalColor.red)
+    def paintOBJ(self, qp, obj, color):
+        qp.setPen(color)
         #qp.setBrush(QBrush(Qt.GlobalColor.red))
         for poly in obj.polygons:
             qp.drawPolygon(poly)

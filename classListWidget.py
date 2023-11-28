@@ -18,6 +18,9 @@ class ListWidget(QListWidget):
     def mousePressEvent(self, e):
         if e.button() == Qt.LeftButton:
             self.LMB = True
+            item = self.itemAt(e.pos())
+            if item is not None:
+                self.itemClick(item)
 
         elif e.button() == Qt.RightButton:
             self.RMB = True
@@ -35,11 +38,21 @@ class ListWidget(QListWidget):
         self.MMB = False
 
     def itemClick(self, item):
-        item.setSelected(True)
+        if self.LMB:
+            if item.isSelected():
+                item.setSelected(False)
+            else:
+                for selitem in self.selectedItems():
+                    self.scene.unselectOBJ(selitem.text())
+                    selitem.setSelected(False)
+                item.setSelected(True)
+                self.scene.setCurrentOBJ(item.text())
+                self.child.update()
+        elif self.RMB:
+                item.setSelected(True)
 
     def showContextMenu(self, pos):
         menu = QMenu(self)
-
         delete_action = QAction("Удалить", self)
         delete_action.triggered.connect(self.deleteItem)
         menu.addAction(delete_action)

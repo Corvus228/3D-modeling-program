@@ -1,5 +1,5 @@
 import filereader
-from PyQt5 import QtCore
+from PyQt5.QtCore import Qt, QPointF
 
 
 class OBJ():
@@ -7,6 +7,7 @@ class OBJ():
 
     def __init__(self, filename):
         super().__init__()
+        self.paintColor = Qt.GlobalColor.black
         self.points = []
         self.pointsIndex = []
         self.normals = []
@@ -15,6 +16,12 @@ class OBJ():
         self.getOBJ(filename)
         self.name = (f"{filename.split('.')[0].split('/')[1]}{OBJ.ID}")
         OBJ.ID += 1
+
+    def setSelectedColor(self):
+        self.paintColor = Qt.GlobalColor.blue
+
+    def setUnselectedColor(self):
+        self.paintColor = Qt.GlobalColor.black
 
     def getOBJ(self, filename):
         lines = filereader.readfile(filename)
@@ -44,7 +51,7 @@ class OBJ():
     def createPolygon(self, pointind, w, h):
         polygon = []
         for i in range(len(pointind)):
-            polygon.append(QtCore.QPointF((self.points[pointind[i]][0] + 1.) * w, (self.points[pointind[i]][1] + 1.) * h))
+            polygon.append(QPointF((self.points[pointind[i]][0] + 1.) * w, (self.points[pointind[i]][1] + 1.) * h))
         return polygon
 
     def rescalePolygon(self, w, h):
