@@ -4,7 +4,30 @@ from PyQt5.QtWidgets import QAction, QListWidget, QListWidgetItem, QMenu, QMessa
 
 
 class ListWidget(QListWidget):
+    """
+       Виджет списка для управления объектами сцены.
+
+       Атрибуты:
+           LMB (bool): Состояние левой кнопки мыши.
+           RMB (bool): Состояние правой кнопки мыши.
+           MMB (bool): Состояние средней кнопки мыши.
+           scene (Scene): Экземпляр класса Scene, управляющий объектами.
+           child (any): Дочерний элемент или виджет, который необходимо обновлять при изменении состояния.
+
+       Методы:
+           getChild(child): Устанавливает ссылку на дочерний виджет, который требуется обновлять.
+           mousePressEvent(e): Обрабатывает нажатие кнопок мыши.
+           mouseReleaseEvent(e): Обрабатывает отпускание кнопок мыши.
+           itemClick(item): Обрабатывает клики по элементам списка.
+           showContextMenu(pos): Отображает контекстное меню для элементов списка.
+           updateList(): Обновляет список элементов в соответствии с объектами на сцене.
+           deleteItem(): Удаляет выбранные элементы из списка и соответствующие объекты из сцены.
+    """
     def __init__(self):
+        """
+            Инициализирует экземпляр ListWidget, создавая начальные значения для кнопок мыши
+            и инициализируя сцену и дочерний элемент.
+        """
         super().__init__()
         self.LMB = False
         self.RMB = False
@@ -13,9 +36,11 @@ class ListWidget(QListWidget):
         self.child = 0
 
     def getChild(self, child):
+        """ Устанавливает дочерний виджет, который будет обновляться при изменениях. """
         self.child = child
 
     def mousePressEvent(self, e):
+        """ Обрабатывает нажатия кнопок мыши, регистрируя состояние кнопок и выбор элемента. """
         if e.button() == Qt.LeftButton:
             self.LMB = True
             item = self.itemAt(e.pos())
@@ -33,11 +58,18 @@ class ListWidget(QListWidget):
             self.MMB = True
 
     def mouseReleaseEvent(self, e):
+        """ Обрабатывает отпускание кнопок мыши, сбрасывая состояние кнопок. """
         self.LMB = False
         self.RMB = False
         self.MMB = False
 
     def itemClick(self, item):
+        """
+            Обрабатывает клики по элементам списка, устанавливая или снимая выбор с объектов.
+
+            Параметры:
+                item (QListWidgetItem): Элемент списка, по которому был произведен клик.
+        """
         if self.LMB:
             if item.isSelected():
                 item.setSelected(False)
@@ -52,6 +84,12 @@ class ListWidget(QListWidget):
                 item.setSelected(True)
 
     def showContextMenu(self, pos):
+        """
+            Отображает контекстное меню с опциями действий для выбранного элемента.
+
+            Параметры:
+                    pos (QPoint): Позиция на экране, где должно быть отображено меню.
+        """
         menu = QMenu(self)
         delete_action = QAction("Удалить", self)
         delete_action.triggered.connect(self.deleteItem)
@@ -59,12 +97,14 @@ class ListWidget(QListWidget):
         menu.exec_(pos)
 
     def updateList(self):
+        """ Обновляет отображаемый список объектов, синхронизируя его с объектами на сцене. """
         self.clear()
         for obj in self.scene.listOfOBJ:
             item = QListWidgetItem(obj.name)
             self.addItem(item)
 
     def deleteItem(self):
+        """ Удаляет выбранные элементы из списка и сцены, а также обновляет дочерний элемент. """
         selected_items = self.selectedItems()
         for item in selected_items:
             self.takeItem(self.row(item))
