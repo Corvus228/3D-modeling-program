@@ -1,4 +1,3 @@
-import filereader
 from PyQt5.QtCore import Qt, QPointF
 
 
@@ -68,7 +67,9 @@ class OBJ():
             Параметры:
             filename (str): Путь к файлу OBJ.
         """
-        lines = filereader.readfile(filename)
+        f = open(filename)
+        lines = f.readlines()
+        f.close()
         for line in lines:
             if line[0] == 'v' and line[1] == ' ':
                 a, x, y, z = line.split()
