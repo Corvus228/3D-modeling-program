@@ -3,7 +3,8 @@ from classListWidget import ListWidget
 from classWidget import Widget
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QAction, QListWidget, QListWidgetItem, QGridLayout
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QAction, QListWidget, QListWidgetItem,\
+                            QGridLayout, QFileDialog
 
 class MainWindow(QMainWindow):
     """
@@ -44,14 +45,16 @@ class MainWindow(QMainWindow):
 
         self.menu = self.menuBar()
         self.file_menu = self.menu.addMenu("&File")
+        action = QAction("&Open...", self.file_menu)
+        action.triggered.connect(lambda checked: self.openFile())
+        self.file_menu.addAction(action)
 
         self.window.setLayout(self.grid)
         self.setCentralWidget(self.window)
 
-        for file in os.listdir("OBJ"):
-            action = QAction(f"Add {file}", self)
-            action.triggered.connect(lambda checked, f=file: self.widget.createOBJ(f"OBJ/{f}"))
-            self.file_menu.addAction(action)
+    def openFile(self):
+        f = QFileDialog.getOpenFileName()[0]
+        self.widget.createOBJ(f"OBJ/{os.path.basename(f)}")
 
     def mouseMoveEvent(self, e):
         """ Обрабатывает перемещение мыши, используя изменение координат для вращения или перемещения объектов."""
