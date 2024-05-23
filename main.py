@@ -52,7 +52,7 @@ class MainWindow(QMainWindow):
         self.file_menu.addAction(openfile)
 
         scenesave = QAction("&Save scene...", self.file_menu)
-        scenesave.triggered.connect(lambda checked: self.openScene())
+        scenesave.triggered.connect(lambda checked: self.saveSceneAsFile())
         self.file_menu.addAction(scenesave)
 
         self.window.setLayout(self.grid)
@@ -70,7 +70,7 @@ class MainWindow(QMainWindow):
             # Add exception later
             pass
 
-    def openScene(self):
+    def saveSceneAsFile(self):
         f = QFileDialog.getSaveFileName()[0]
         self.list.scene.saveScene(f)
 
