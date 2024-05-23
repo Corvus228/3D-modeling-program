@@ -1,10 +1,11 @@
-import os, sys, time
+import os, sys
 from classListWidget import ListWidget
 from classWidget import Widget
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QAction, QListWidget, QListWidgetItem,\
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QAction,\
                             QGridLayout, QFileDialog
+
 
 class MainWindow(QMainWindow):
     """
@@ -45,16 +46,33 @@ class MainWindow(QMainWindow):
 
         self.menu = self.menuBar()
         self.file_menu = self.menu.addMenu("&File")
-        action = QAction("&Open...", self.file_menu)
-        action.triggered.connect(lambda checked: self.openFile())
-        self.file_menu.addAction(action)
+
+        openfile = QAction("&Open...", self.file_menu)
+        openfile.triggered.connect(lambda checked: self.openFile())
+        self.file_menu.addAction(openfile)
+
+        scenesave = QAction("&Save scene...", self.file_menu)
+        scenesave.triggered.connect(lambda checked: self.openScene())
+        self.file_menu.addAction(scenesave)
 
         self.window.setLayout(self.grid)
         self.setCentralWidget(self.window)
 
     def openFile(self):
-        f = QFileDialog.getOpenFileName()[0]
-        self.widget.createOBJ(f"OBJ/{os.path.basename(f)}")
+        f = QFileDialog.getOpenFileName()
+        path, extension = os.path.splitext(f[0])
+        if extension == '.obj':
+            self.widget.createOBJ(f"OBJ/{os.path.basename(f[0])}")
+        elif extension == '.json':
+            self.list.scene.loadScene(f[0])
+            self.list.updateList()
+        else:
+            # Add exception later
+            pass
+
+    def openScene(self):
+        f = QFileDialog.getSaveFileName()[0]
+        self.list.scene.saveScene(f)
 
     def mouseMoveEvent(self, e):
         """ Обрабатывает перемещение мыши, используя изменение координат для вращения или перемещения объектов."""

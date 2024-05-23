@@ -1,5 +1,6 @@
 import matrix
-
+import json
+from classOBJ import OBJ
 
 class Scene():
     """
@@ -99,3 +100,30 @@ class Scene():
         for obj in self.selectedOBJs:
             matrix.move(coefficient_x, coefficient_y, obj)
 
+    def saveScene(self, filename):
+        scene_data = []
+        for obj in self.listOfOBJ:
+            obj_data = {
+                'name': obj.name,
+                'points': obj.points,
+                'pointsIndex': obj.pointsIndex
+            }
+            scene_data.append(obj_data)
+
+        if not filename.endswith('.json'):
+            filename += '.json'
+        with open(filename, 'w') as f:
+            json.dump(scene_data, f, indent=4)
+
+    def loadScene(self, filename):
+        with open(filename, 'r') as f:
+            scene_data = json.load(f)
+
+        self.listOfOBJ = []
+        for obj_data in scene_data:
+            obj = OBJ()
+            obj.name = obj_data['name']
+            obj.points = obj_data['points']
+            obj.pointsIndex = obj_data['pointsIndex']
+            self.addOBJ(obj)
+        self.getOBJnames()

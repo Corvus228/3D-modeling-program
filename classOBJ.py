@@ -1,7 +1,7 @@
 from PyQt5.QtCore import Qt, QPointF
 
 
-class OBJ():
+class OBJ:
     """
         Класс для работы с объектами в формате OBJ.
 
@@ -25,7 +25,7 @@ class OBJ():
     """
     ID = 0
 
-    def __init__(self, filename):
+    def __init__(self, filename=None):
         """
             Инициализирует объект на основе данных из файла формата OBJ.
 
@@ -49,8 +49,13 @@ class OBJ():
         self.textures = []
         self.polygons = []
         self.getOBJ(filename)
-        self.name = (f"{filename.split('.')[0].split('/')[1]}{OBJ.ID}")
-        OBJ.ID += 1
+        if filename:
+            self.getOBJ(filename)
+            self.name = f"{filename.split('.')[0].split('/')[-1]}{OBJ.ID}"
+            OBJ.ID += 1
+        else:
+            self.name = f"OBJ{OBJ.ID}"
+            OBJ.ID += 1
 
     def setSelectedColor(self):
         """ Устанавливает цвет объекта в синий (выбранный объект). """
@@ -67,44 +72,44 @@ class OBJ():
             Параметры:
             filename (str): Путь к файлу OBJ.
         """
-        f = open(filename)
-        lines = f.readlines()
-        f.close()
-        for line in lines:
-            if line[0] == 'v' and line[1] == ' ':
-                a, x, y, z = line.split()
-                self.points.append([-float(x), -float(y), -float(z)])
-            if line[0] == 'v' and line[1] == 'n':
-                a, x, y, z = line.split()
-                self.normals.append([float(x), float(y), float(z)])
-            if line[0] == 'v' and line[1] == 't':
-                coords = []
-                a = line.split()
-                for xyz in a:
-                    if xyz != 'vt':
-                        coords.append(float(xyz))
-                self.textures.append(coords)
-            if line[0] == 'f':
-                pointind = []
-                a = line.split()
-                for xyz in a:
-                    if xyz != 'f':
-                        num = xyz.split('/')
-                        pointind.append(int(num[0]) - 1)
-                self.pointsIndex.append(pointind)
-                self.polygons.append(self.createPolygon(pointind, 1, 1))
+        if filename is not None:
+            with open(filename) as f:
+                lines = f.readlines()
+            for line in lines:
+                if line[0] == 'v' and line[1] == ' ':
+                    a, x, y, z = line.split()
+                    self.points.append([-float(x), -float(y), -float(z)])
+                if line[0] == 'v' and line[1] == 'n':
+                    a, x, y, z = line.split()
+                    self.normals.append([float(x), float(y), float(z)])
+                if line[0] == 'v' and line[1] == 't':
+                    coords = []
+                    a = line.split()
+                    for xyz in a:
+                        if xyz != 'vt':
+                            coords.append(float(xyz))
+                    self.textures.append(coords)
+                if line[0] == 'f':
+                    pointind = []
+                    a = line.split()
+                    for xyz in a:
+                        if xyz != 'f':
+                            num = xyz.split('/')
+                            pointind.append(int(num[0]) - 1)
+                    self.pointsIndex.append(pointind)
+                    self.polygons.append(self.createPolygon(pointind, 1, 1))
 
     def createPolygon(self, pointind, w, h):
         """
             Создает полигон на основе индексов точек и размеров.
 
             Параметры:
-            pointing (list): Список индексов точек.
+            pointind (list): Список индексов точек.
             w (float): Ширина масштабирования.
             h (float): Высота масштабирования.
 
             Возвращает:
-            list: Список точек (QPointF) полигона.
+            polygon: Список полигонов.
          """
         polygon = []
         for i in range(len(pointind)):
