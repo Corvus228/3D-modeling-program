@@ -1,6 +1,6 @@
 import scene
-from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QAction, QListWidget, QListWidgetItem, QMenu, QMessageBox
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QAction, QListWidget, QListWidgetItem, QMenu, QColorDialog
 
 
 class ListWidget(QListWidget):
@@ -81,7 +81,7 @@ class ListWidget(QListWidget):
                 self.scene.setCurrentOBJ(item.text())
                 self.child.update()
         elif self.RMB:
-                item.setSelected(True)
+            item.setSelected(True)
 
     def showContextMenu(self, pos):
         """
@@ -93,6 +93,9 @@ class ListWidget(QListWidget):
         menu = QMenu(self)
         delete_action = QAction("Удалить", self)
         delete_action.triggered.connect(self.deleteItem)
+        color_action = QAction("Изменить цвет", self)
+        color_action.triggered.connect(self.changeColor)
+        menu.addAction(color_action)
         menu.addAction(delete_action)
         menu.exec_(pos)
 
@@ -110,3 +113,9 @@ class ListWidget(QListWidget):
             self.takeItem(self.row(item))
             self.scene.removeOBJ(item.text())
             self.child.update()
+
+    def changeColor(self):
+        selected_items = self.selectedItems()
+        color = QColorDialog.getColor()
+        for item in selected_items:
+            self.scene.colorOBJ(item.text(), color)

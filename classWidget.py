@@ -1,6 +1,8 @@
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtGui import QPainter
 from classOBJ import OBJ
+
+
 class Widget(QWidget):
     """
         Виджет для отображения и взаимодействия с 3D объектами.
@@ -28,6 +30,7 @@ class Widget(QWidget):
     def paintEvent(self, e):
         """ Обрабатывает событие отрисовки, рисуя все объекты на сцене с учетом текущего масштаба и положения. """
         qp = QPainter()
+        qp.setRenderHint(QPainter.Antialiasing)
         qp.begin(self)
         w = self.width() / 2
         h = self.height() / 2
@@ -38,7 +41,7 @@ class Widget(QWidget):
         if self.scene.listOfOBJ:
             for obj in self.scene.listOfOBJ:
                 obj.rescalePolygon(w, h)
-                self.paintOBJ(qp, obj, obj.paintColor)
+                self.paintOBJ(qp, obj, obj.paintColor, obj.polyColor)
         qp.end()
 
     def createOBJ(self, filename):
@@ -52,7 +55,7 @@ class Widget(QWidget):
         self.list.updateList()
         self.update()
 
-    def paintOBJ(self, qp, obj, color):
+    def paintOBJ(self, qp, obj, color, polyColor):
         """
             Рисует один объект, используя QPainter, с заданным цветом.
 
@@ -61,7 +64,9 @@ class Widget(QWidget):
                 obj (OBJ): Объект для отрисовки.
                 color (QColor): Цвет пера для рисования объекта.
         """
+        sorted_polygons = sorted(obj.polygons, key=lambda item: item[1], reverse=True)
         qp.setPen(color)
-        #qp.setBrush(QBrush(Qt.GlobalColor.red))
-        for poly in obj.polygons:
+        qp.setBrush(polyColor)
+
+        for poly, z in sorted_polygons:
             qp.drawPolygon(poly)

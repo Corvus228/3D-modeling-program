@@ -1,4 +1,5 @@
 from PyQt5.QtCore import Qt, QPointF
+from PyQt5.QtGui import QColor
 
 
 class OBJ:
@@ -43,6 +44,7 @@ class OBJ:
         """
         super().__init__()
         self.paintColor = Qt.GlobalColor.black
+        self.polyColor = Qt.GlobalColor.yellow
         self.points = []
         self.pointsIndex = []
         self.normals = []
@@ -59,7 +61,7 @@ class OBJ:
 
     def setSelectedColor(self):
         """ Устанавливает цвет объекта в синий (выбранный объект). """
-        self.paintColor = Qt.GlobalColor.blue
+        self.paintColor = Qt.GlobalColor.red
 
     def setUnselectedColor(self):
         """ Устанавливает цвет объекта в черный (не выбранный объект). """
@@ -104,7 +106,7 @@ class OBJ:
             Создает полигон на основе индексов точек и размеров.
 
             Параметры:
-            pointind (list): Список индексов точек.
+            pointing (list): Список индексов точек.
             w (float): Ширина масштабирования.
             h (float): Высота масштабирования.
 
@@ -112,9 +114,11 @@ class OBJ:
             polygon: Список полигонов.
          """
         polygon = []
+        z_buffer = []
         for i in range(len(pointind)):
             polygon.append(QPointF((self.points[pointind[i]][0] + 1.) * w, (self.points[pointind[i]][1] + 1.) * h))
-        return polygon
+            z_buffer.append(self.points[pointind[i]][2])
+        return [polygon, z_buffer]
 
     def rescalePolygon(self, w, h):
         """
@@ -127,3 +131,20 @@ class OBJ:
         self.polygons = []
         for point in self.pointsIndex:
             self.polygons.append(self.createPolygon(point, w, h))
+
+    def calculate_average_z(self, z):
+        """Вычисляет среднее значение Z для полигонов"""
+        return sum([vertex for vertex in z]) / len(z)
+
+    def color_to_dictionary(self, color):
+        """Преобразует QColor в словарь."""
+        return {
+            'red': color.red(),
+            'green': color.green(),
+            'blue': color.blue(),
+            'alpha': color.alpha()
+        }
+
+    def dictionary_to_color(self, color_dict):
+        """Создает QColor из словаря."""
+        return QColor(color_dict['red'], color_dict['green'], color_dict['blue'], color_dict['alpha'])

@@ -1,4 +1,5 @@
-import os, sys
+import os
+import sys
 from classListWidget import ListWidget
 from classWidget import Widget
 
@@ -67,7 +68,6 @@ class MainWindow(QMainWindow):
             self.list.scene.loadScene(f[0])
             self.list.updateList()
         else:
-            # Add exception later
             pass
 
     def saveSceneAsFile(self):
@@ -104,10 +104,6 @@ class MainWindow(QMainWindow):
         elif e.button() == Qt.MiddleButton:
             self.MMB = True
 
-        # while self.LMB:
-        #     #self.widget.rotateX(0.1)
-        #     self.widget.rotateY(10)
-        #     time.sleep(0.01)
     def mouseReleaseEvent(self, e):
         """ Обрабатывает события отпускания кнопок мыши, сбрасывая состояние кнопок. """
         self.LMB = False
@@ -120,7 +116,6 @@ class MainWindow(QMainWindow):
             x = e.angleDelta().y() // 120
             self.widget.scene.objScale(self.widget.scene.selectedOBJs, pow(2, x))
             self.widget.update()
-
 
 
 def main():

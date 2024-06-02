@@ -2,7 +2,8 @@ import matrix
 import json
 from classOBJ import OBJ
 
-class Scene():
+
+class Scene:
     """
         Класс для управления сценой.
 
@@ -51,6 +52,12 @@ class Scene():
                 self.listOfOBJ.remove(obj)
         self.getOBJnames()
 
+    def colorOBJ(self, objname, color):
+        """ Меняет цвет объекта по его имени из сцены и обновляет его отображение. """
+        for obj in self.listOfOBJ:
+            if obj.name == objname:
+                obj.polyColor = color
+
     def setCurrentOBJ(self, objname):
         """ Устанавливает указанный объект как текущий выбранный и изменяет его цвет. """
         self.selectedOBJs = []
@@ -75,29 +82,34 @@ class Scene():
                 self.selectedOBJs.append(obj)
         self.getOBJnames()
 
-    def objRotateX(self, obj, angle):
+    @staticmethod
+    def objRotateX(objs, angle):
         """ Вращает все выбранные объекты вокруг оси X на указанный угол. """
-        for obj in self.selectedOBJs:
+        for obj in objs:
             matrix.rotateX(angle, obj)
 
-    def objRotateY(self, obj, angle):
+    @staticmethod
+    def objRotateY(objs, angle):
         """ Вращает все выбранные объекты вокруг оси Y на указанный угол. """
-        for obj in self.selectedOBJs:
+        for obj in objs:
             matrix.rotateY(angle, obj)
 
-    def objRotateZ(self, obj, angle):
+    @staticmethod
+    def objRotateZ(objs, angle):
         """ Вращает все выбранные объекты вокруг оси Z на указанный угол. """
-        for obj in self.selectedOBJs:
+        for obj in objs:
             matrix.rotateZ(angle, obj)
 
-    def objScale(self, obj, coefficient):
+    @staticmethod
+    def objScale(objs, coefficient):
         """ Масштабирует все выбранные объекты на указанный коэффициент. """
-        for obj in self.selectedOBJs:
+        for obj in objs:
             matrix.scale(coefficient, obj)
 
-    def objMove(self, obj, coefficient_x, coefficient_y):
+    @staticmethod
+    def objMove(objs, coefficient_x, coefficient_y):
         """ Перемещает все выбранные объекты на указанные коэффициенты по осям X и Y. """
-        for obj in self.selectedOBJs:
+        for obj in objs:
             matrix.move(coefficient_x, coefficient_y, obj)
 
     def saveScene(self, filename):
@@ -106,8 +118,10 @@ class Scene():
             obj_data = {
                 'name': obj.name,
                 'points': obj.points,
-                'pointsIndex': obj.pointsIndex
+                'pointsIndex': obj.pointsIndex,
+                'polyColor': obj.color_to_dictionary(obj.polyColor)
             }
+            print(obj.polyColor)
             scene_data.append(obj_data)
 
         if not filename.endswith('.json'):
@@ -125,5 +139,6 @@ class Scene():
             obj.name = obj_data['name']
             obj.points = obj_data['points']
             obj.pointsIndex = obj_data['pointsIndex']
+            obj.polyColor = obj.dictionary_to_color(obj_data['polyColor'])
             self.addOBJ(obj)
         self.getOBJnames()
